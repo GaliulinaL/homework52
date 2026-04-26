@@ -10,6 +10,9 @@ const App = () => {
   const [cards, setCards] = useState<Card[]>([]);
   const [result, setResult] = useState('');
 
+  const [selected, setSelected] = useState<number[]>([]);
+
+
   const handleClick = () => {
     const deck = new CardDeck();
     const newCards = deck.getCards(5);
@@ -23,12 +26,37 @@ const App = () => {
   return (
       <div>
         <button onClick={handleClick}>Раздать</button>
+        <button onClick={() => {
+          const deck = new CardDeck();
+          const newCards = [...cards];
+
+          for (let i = 0; i < selected.length; i++) {
+            newCards[selected[i]] = deck.getCard();
+          }
+
+          setCards(newCards);
+          setSelected([]);
+        }}>
+          Replace
+        </button>
 
         {cards.length > 0 && (
             <>
               <div className="playingCards faceImages">
                 {cards.map((c, i) => (
-                    <CardView key={i} rank={c.rank} suit={c.suit} />
+                    <div key={i}>
+                      <input
+                          type="checkbox"
+                          onChange={() => {
+                            if (selected.includes(i)) {
+                              setSelected(selected.filter(x => x !== i));
+                            } else {
+                              setSelected([...selected, i]);
+                            }
+                          }}
+                      />
+                      <CardView rank={c.rank} suit={c.suit} />
+                    </div>
                 ))}
               </div>
 
