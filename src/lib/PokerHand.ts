@@ -27,7 +27,14 @@ class PokerHand {
             if (counts[key] === 2) pairs++;
             if (counts[key] === 3) three = true;
         }
-
+        for (let key in counts) {
+            if (counts[key] === 4) {
+                return 'Каре';
+            }
+        }
+        if (three && pairs === 1) {
+            return 'Фулл хаус';
+        }
         if (three) return 'Тройка';
         if (pairs === 2) return 'Две пары';
         if (pairs === 1) return 'Одна пара';

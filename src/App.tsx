@@ -12,11 +12,13 @@ const App = () => {
 
   const [selected, setSelected] = useState<number[]>([]);
 
+  const [deck, setDeck] = useState<CardDeck | null>(null);
 
   const handleClick = () => {
-    const deck = new CardDeck();
-    const newCards = deck.getCards(5);
+    const newDeck = new CardDeck();
+    const newCards = newDeck.getCards(5);
 
+    setDeck(newDeck);
     setCards(newCards);
 
     const hand = new PokerHand(newCards);
@@ -26,19 +28,6 @@ const App = () => {
   return (
       <div>
         <button onClick={handleClick}>Раздать</button>
-        <button onClick={() => {
-          const deck = new CardDeck();
-          const newCards = [...cards];
-
-          for (let i = 0; i < selected.length; i++) {
-            newCards[selected[i]] = deck.getCard();
-          }
-
-          setCards(newCards);
-          setSelected([]);
-        }}>
-          Replace
-        </button>
 
         {cards.length > 0 && (
             <>
@@ -55,10 +44,30 @@ const App = () => {
                             }
                           }}
                       />
+
                       <CardView rank={c.rank} suit={c.suit} />
                     </div>
                 ))}
               </div>
+              <button
+                  onClick={() => {
+                    if (!deck) return;
+
+                    const newCards = [...cards];
+
+                    for (let i = 0; i < selected.length; i++) {
+                      newCards[selected[i]] = deck.getCard();
+                    }
+
+                    setCards(newCards);
+                    setSelected([]);
+
+                    const hand = new PokerHand(newCards);
+                    setResult(hand.getOutcome());
+                  }}
+              >
+                Заменить
+              </button>
 
               <p>{result}</p>
             </>
